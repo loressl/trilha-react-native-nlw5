@@ -15,9 +15,9 @@ import fonts from '../styles/fonts';
 export function Confirmation(){
    const navigation = useNavigation();
 
-   // function handleMoveOn(){
-   //    navigation.navigate('PlantSelect');
-   // }
+   function handleMoveOn(){
+      navigation.navigate('PlantSelect');
+   }
 
    return(
       <SafeAreaView style={styles.container}>
@@ -39,6 +39,7 @@ export function Confirmation(){
                <Button 
                   title="Começar"
                   activeOpacity={0.7}
+                  onPress={handleMoveOn}
                />
             </View>
          </View>         
