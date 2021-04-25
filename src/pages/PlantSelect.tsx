@@ -6,8 +6,10 @@ import {
     FlatList, // renderizar listas
     ActivityIndicator
 } from 'react-native';
+import { useNavigation } from "@react-navigation/core";
 import { EnviromentButton } from '../components/EnviromentButton';
 import {Load} from '../components/Load';
+import { PlantProps } from "../libs/Storage";
 import { Header } from '../components/Header';
 import { PlantsCardPrimary } from '../components/PlantsCardPrimary';
 import api from '../services/api';
@@ -20,28 +22,18 @@ interface EnviromentProps {
     title: string;
 }
 
-interface PlantsProps {
-    id: string;
-    name: string;
-    about: string;
-    water_tips: string;
-    photo: string;
-    environments: [string];
-    frequency: {
-        times: number,
-        repeat_every: string
-    };
-}
 
 export function PlantSelect() {
     const [enviroments, setEnviroments] = useState<EnviromentProps[]>([]);
-    const [plants, setPlants] = useState<PlantsProps[]>([]);
-    const [filteredplants, setFilteredPlants] = useState<PlantsProps[]>([]);
+    const [plants, setPlants] = useState<PlantProps[]>([]);
+    const [filteredplants, setFilteredPlants] = useState<PlantProps[]>([]);
     const [environmentSelected, setEnvironmentSelected] = useState('all');
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1); //verifica o numero de paginas
     const [loadingMore, setLoadingMore] = useState(false);//valida se tem mais uma pagina a ser render
     const [loadedAll, setLoadedAll] = useState(false)//
+
+    const navigation = useNavigation();
 
     useEffect(() => { // carrega antes da tela ser carregada
         async function fetchEnviroment() {
@@ -85,7 +77,6 @@ export function PlantSelect() {
         setFilteredPlants(filtered);
     }
 
-
     //criando api para usuario conforme ele vai rolando
     function handlefetchMore(distance: number){
         if(distance <1)
@@ -94,11 +85,14 @@ export function PlantSelect() {
         setPage(oldValue => oldValue +1);
         fetchPlants();
     }
+    
+    function handlePlantSelect(plant: PlantProps) {
+        navigation.navigate("PlantSave", { plant });
+    }
 
     if(loading){
         return < Load/>
     }
-
 
     return (
         <View style={styles.container}>
@@ -115,6 +109,7 @@ export function PlantSelect() {
             <View>
                 <FlatList
                     data={enviroments}
+                    keyExtractor={(item) => String(item.key)}
                     renderItem={({ item }) => (
                         <EnviromentButton
                             key={item.key}
@@ -126,15 +121,18 @@ export function PlantSelect() {
                     horizontal // lista horizontal
                     showsHorizontalScrollIndicator={false} // retirar scroll visual
                     contentContainerStyle={styles.enviromentList} // estilizar a lista
-                    ListHeaderComponent={<View />} // visualizar
-                    ListHeaderComponentStyle={{ marginHorizontal: 5 }} // margin nao funciona muito bem com listas no style
+                    // ListHeaderComponent={<View />} // visualizar
+                    // ListHeaderComponentStyle={{ marginHorizontal: 5 }} // margin nao funciona muito bem com listas no style
                 />
             </View>
             <View style={styles.plants}>
                 <FlatList
                     data={filteredplants}
+                    keyExtractor={(item) => String(item.id)}
                     renderItem={({item})=>(
-                        <PlantsCardPrimary key={item.id} data={item}/>
+                        <PlantsCardPrimary key={item.id} data={item}                             onPress={() => {
+                            handlePlantSelect(item);
+                        }}/>
                     )}
                     showsVerticalScrollIndicator={false}
                     numColumns={2}
