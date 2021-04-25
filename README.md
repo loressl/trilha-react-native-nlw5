@@ -6,4 +6,7 @@
 <img src="screens/tela_2.JPG" width="300px" height="550px">
 <img src="screens/tela_3.JPG" width="300px" height="550px">
 <img src="screens/tela_4.JPG" width="300px" height="550px">
+<img src="screens/tela_5.JPG" width="300px" height="550px">
+<img src="screens/tela_6.JPG" width="300px" height="550px">
+<img src="screens/tela_7.JPG" width="300px" height="550px">
 </div>
